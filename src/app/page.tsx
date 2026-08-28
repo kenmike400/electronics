@@ -11,7 +11,7 @@ async function getProducts() {
       .select("*")
       .eq("active", true)
       .order("created_at", { ascending: false })
-      .limit(18);
+      .limit(24);
     if (!error && data && data.length > 0) return data;
   } catch {
     /* use fallback */
