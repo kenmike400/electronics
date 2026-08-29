@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { COUNTIES, getSubs } from "@/lib/counties";
 
 type CartItem = {
   id: string;
@@ -37,6 +38,8 @@ export default function CheckoutPage() {
     email: "",
     phone: "",
     address: "",
+    county: "",
+    sublocation: "",
   });
 
   useEffect(() => {
@@ -51,10 +54,17 @@ export default function CheckoutPage() {
           name: g.name || f.name,
           email: g.email || f.email,
           phone: g.phone || f.phone,
+          county: g.county || f.county,
+          sublocation: g.sublocation || f.sublocation,
         }));
       } catch {}
     }
   }, []);
+
+  const subOptions = useMemo(
+    () => (form.county ? getSubs(form.county) : []),
+    [form.county]
+  );
 
   const subtotal = useMemo(
     () => items.reduce((s, i) => s + i.price * i.qty, 0),
@@ -88,7 +98,14 @@ export default function CheckoutPage() {
       setError("Cart is empty");
       return;
     }
-    // basic validation
+    if (!form.county) {
+      setError("Select your county for delivery");
+      return;
+    }
+    if (!form.sublocation) {
+      setError("Select a sub-location / town");
+      return;
+    }
     if (!form.phone.match(/^(\+?254|0)?[17]\d{8}$/)) {
       setError("Enter a valid Kenyan phone number for M-Pesa (e.g. 07XXXXXXXX)");
       return;
@@ -100,6 +117,15 @@ export default function CheckoutPage() {
     setLoading(true);
     setError("");
 
+    const fullAddress = [
+      form.address,
+      form.sublocation,
+      form.county,
+      "Kenya",
+    ]
+      .filter(Boolean)
+      .join(", ");
+
     try {
       localStorage.setItem(
         "guest_profile",
@@ -107,6 +133,8 @@ export default function CheckoutPage() {
           name: form.name,
           email: form.email,
           phone: form.phone,
+          county: form.county,
+          sublocation: form.sublocation,
         })
       );
 
@@ -114,7 +142,12 @@ export default function CheckoutPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...form,
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          address: fullAddress,
+          county: form.county,
+          sublocation: form.sublocation,
           items,
           subtotal,
           discount: promoApplied ? discount : 0,
@@ -155,9 +188,10 @@ export default function CheckoutPage() {
 
   return (
     <>
-      <h1>Checkout — M-Pesa only</h1>
+      <h1>Checkout — Pay with M-Pesa</h1>
       <p className="subtitle">
-        Secure payment · Use code <strong>September80</strong> for site-wide discounts
+        One place: location + payment · Code <strong>September80</strong> · Orders
+        &amp; emails saved securely
       </p>
 
       {error && <div className="alert alert-error">{error}</div>}
@@ -175,8 +209,9 @@ export default function CheckoutPage() {
         </div>
       )}
 
-      <div className="checkout-layout" style={{ display: "grid", gap: 20, gridTemplateColumns: "1fr" }}>
-        <form className="form" onSubmit={submit}>
+      <div className="checkout-layout">
+        <form className="form checkout-form" onSubmit={submit}>
+          <h2 className="checkout-section-title">1. Your details</h2>
           <label>Full name</label>
           <input
             required
@@ -185,7 +220,7 @@ export default function CheckoutPage() {
             autoComplete="name"
           />
 
-          <label>Email (for receipt)</label>
+          <label>Email (receipt stored in your account)</label>
           <input
             required
             type="email"
@@ -204,14 +239,50 @@ export default function CheckoutPage() {
             autoComplete="tel"
           />
 
-          <label>Delivery address</label>
+          <h2 className="checkout-section-title">2. Delivery location</h2>
+          <label>County (all 47)</label>
+          <select
+            required
+            value={form.county}
+            onChange={(e) =>
+              setForm({ ...form, county: e.target.value, sublocation: "" })
+            }
+          >
+            <option value="">Select county</option>
+            {COUNTIES.map((c) => (
+              <option key={c.name} value={c.name}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+
+          <label>Sub-location / town</label>
+          <select
+            required
+            value={form.sublocation}
+            onChange={(e) => setForm({ ...form, sublocation: e.target.value })}
+            disabled={!form.county}
+          >
+            <option value="">
+              {form.county ? "Select sub-location" : "Select county first"}
+            </option>
+            {subOptions.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+
+          <label>Street / building / extra details</label>
           <textarea
             required
-            rows={3}
+            rows={2}
+            placeholder="Estate, building, floor, landmark…"
             value={form.address}
             onChange={(e) => setForm({ ...form, address: e.target.value })}
           />
 
+          <h2 className="checkout-section-title">3. Promo &amp; pay</h2>
           <label>Promo code</label>
           <div style={{ display: "flex", gap: 8 }}>
             <input
@@ -230,64 +301,63 @@ export default function CheckoutPage() {
               Apply
             </button>
           </div>
-          <p style={{ fontSize: 12, color: "#75757a", marginTop: 4 }}>
-            Code works in any case (september80 / September80). 80% off items ≥ KSh 2,000 · 50% off items under KSh 2,000.
+          <p className="checkout-hint">
+            Any case works (september80). 80% off items ≥ KSh 2,000 · 50% off under
+            KSh 2,000 · site-wide.
           </p>
 
-          <div
-            style={{
-              marginTop: 16,
-              padding: 14,
-              background: "#fff",
-              border: "1px solid #ededed",
-              borderRadius: 4,
-            }}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+          <div className="checkout-summary">
+            <div className="checkout-sum-row">
               <span>Subtotal</span>
               <span>KSh {subtotal.toLocaleString()}</span>
             </div>
             {promoApplied && (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: 6,
-                  color: "#e61601",
-                  fontWeight: 600,
-                }}
-              >
+              <div className="checkout-sum-row discount">
                 <span>September80 discount</span>
                 <span>− KSh {discount.toLocaleString()}</span>
               </div>
             )}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                fontSize: 18,
-                fontWeight: 700,
-                borderTop: "1px solid #ededed",
-                paddingTop: 8,
-              }}
-            >
+            <div className="checkout-sum-row total">
               <span>Total (M-Pesa)</span>
               <span>KSh {total.toLocaleString()}</span>
             </div>
           </div>
 
           <button
-            className="btn"
+            className="btn btn-mpesa"
             type="submit"
             disabled={loading}
             style={{ width: "100%", marginTop: 16, padding: "14px 20px" }}
           >
-            {loading ? "Processing secure payment…" : `Pay KSh ${total.toLocaleString()} with M-Pesa`}
+            {loading
+              ? "Processing secure payment…"
+              : `Pay KSh ${total.toLocaleString()} with M-Pesa`}
           </button>
-          <p style={{ fontSize: 12, color: "#75757a", marginTop: 8, textAlign: "center" }}>
-            🔒 Secure checkout · M-Pesa only · Receipt sent to your email
+          <p className="checkout-secure">
+            🔒 Secure checkout · M-Pesa only · Order &amp; email saved · Receipt
+            sent to your inbox
           </p>
         </form>
+
+        <aside className="checkout-items">
+          <h2 className="checkout-section-title">Your items</h2>
+          {items.map((i) => (
+            <div key={i.id} className="checkout-item">
+              {i.image_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={i.image_url} alt="" />
+              ) : (
+                <div className="checkout-item-ph" />
+              )}
+              <div>
+                <div className="checkout-item-name">{i.name}</div>
+                <div className="checkout-item-meta">
+                  Qty {i.qty} · KSh {(i.price * i.qty).toLocaleString()}
+                </div>
+              </div>
+            </div>
+          ))}
+        </aside>
       </div>
     </>
   );

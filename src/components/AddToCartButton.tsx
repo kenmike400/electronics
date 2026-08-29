@@ -13,10 +13,10 @@ type Product = {
 
 export default function AddToCartButton({ product }: { product: Product }) {
   const [qty, setQty] = useState(1);
-  const [done, setDone] = useState(false);
+  const [busy, setBusy] = useState(false);
   const router = useRouter();
 
-  function add() {
+  function buildCart() {
     const raw = localStorage.getItem("cart");
     const cart: Array<{
       id: string;
@@ -39,47 +39,41 @@ export default function AddToCartButton({ product }: { product: Product }) {
         qty,
       });
     localStorage.setItem("cart", JSON.stringify(cart));
-    setDone(true);
-    setTimeout(() => setDone(false), 2000);
+  }
+
+  function payMpesa() {
+    setBusy(true);
+    buildCart();
+    router.push("/checkout");
   }
 
   return (
-    <div>
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
-        <span style={{ fontWeight: 600 }}>Quantity</span>
+    <div className="pdp-buy">
+      <div className="pdp-qty-row">
+        <span className="pdp-qty-label">Quantity</span>
         <div className="qty-ctrl">
-          <button type="button" onClick={() => setQty(Math.max(1, qty - 1))}>
+          <button type="button" onClick={() => setQty(Math.max(1, qty - 1))} aria-label="Decrease">
             −
           </button>
           <span>{qty}</span>
-          <button type="button" onClick={() => setQty(qty + 1)}>
+          <button type="button" onClick={() => setQty(qty + 1)} aria-label="Increase">
             +
           </button>
         </div>
       </div>
-      <button type="button" className="btn btn-block" onClick={add}>
-        {done ? "✓ Added to cart" : "Add to cart"}
+
+      <button
+        type="button"
+        className="btn btn-block btn-mpesa"
+        onClick={payMpesa}
+        disabled={busy}
+      >
+        {busy ? "Opening checkout…" : "Pay with M-Pesa"}
       </button>
-      {done && (
-        <div style={{ marginTop: 10, display: "flex", gap: 8 }}>
-          <button
-            type="button"
-            className="btn btn-outline"
-            style={{ flex: 1 }}
-            onClick={() => router.push("/cart")}
-          >
-            Go to cart
-          </button>
-          <button
-            type="button"
-            className="btn"
-            style={{ flex: 1 }}
-            onClick={() => router.push("/checkout")}
-          >
-            Checkout
-          </button>
-        </div>
-      )}
+
+      <p className="pdp-secure-note">
+        🔒 One-step checkout · Delivery to all 47 counties · Receipt by email
+      </p>
     </div>
   );
 }

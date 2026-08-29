@@ -17,8 +17,13 @@ export async function POST(req: NextRequest) {
       email,
       phone,
       address,
+      county,
+      sublocation,
       items,
       total,
+      subtotal,
+      discount,
+      promo_code,
       payment_method = "mpesa",
     } = body;
 
@@ -37,6 +42,7 @@ export async function POST(req: NextRequest) {
     }
 
     const onum = orderNumber();
+    const shippingLine = [address, sublocation, county].filter(Boolean).join(', ') || address;
     let orderId: string | null = null;
 
     // Try Supabase when keys are present
@@ -79,7 +85,7 @@ export async function POST(req: NextRequest) {
             customer_name: name,
             customer_email: email,
             customer_phone: phone,
-            shipping_address: address,
+            shipping_address: shippingLine,
             total: Number(total),
             status: "paid",
             payment_method: "mpesa",

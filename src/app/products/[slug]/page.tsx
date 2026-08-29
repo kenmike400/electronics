@@ -33,7 +33,8 @@ export default async function ProductPage({
           {product.brand} · {product.category}
         </p>
         <h1>{product.name}</h1>
-        <div style={{ margin: "16px 0" }}>
+
+        <div className="pdp-price-row">
           <div className="pdp-price">KSh {price.toLocaleString()}</div>
           {compare ? (
             <span>
@@ -42,31 +43,38 @@ export default async function ProductPage({
             </span>
           ) : null}
         </div>
-        <p style={{ marginBottom: 16, color: "#75757a" }}>
-          {product.description}
+
+        <p className="pdp-promo-hint">
+          Use code <strong>September80</strong> at checkout —{" "}
+          {price >= 2000 ? "80% off (item ≥ KSh 2,000)" : "50% off (item under KSh 2,000)"}
         </p>
-        <p style={{ marginBottom: 16 }}>
-          <span className="mpesa-badge">Pay with M-Pesa</span>
-        </p>
+
+        <p className="pdp-desc">{product.description}</p>
+
         <p
-          style={{
-            marginBottom: 16,
-            color: product.stock > 0 ? "#27ae60" : "#e61601",
-            fontWeight: 600,
-          }}
+          className="pdp-stock"
+          style={{ color: product.stock > 0 ? "#27ae60" : "#e61601" }}
         >
           {product.stock > 0
             ? `In stock (${product.stock} units)`
             : "Out of stock"}
         </p>
-        <AddToCartButton product={product} />
-        <div style={{ marginTop: 16, display: "flex", gap: 12, flexWrap: "wrap" }}>
-          <Link href="/cart" className="btn btn-outline">
-            Go to cart
-          </Link>
-          <Link href="/checkout" className="btn">
-            Checkout (M-Pesa)
-          </Link>
+
+        <div className="pdp-delivery-box">
+          <strong>Delivery</strong>
+          <span>All 47 Kenyan counties · Pick sub-location at checkout</span>
+          <span>Door delivery or pickup station · M-Pesa only</span>
+        </div>
+
+        {product.stock > 0 ? (
+          <AddToCartButton product={product} />
+        ) : (
+          <p style={{ color: "#e61601", fontWeight: 600 }}>Currently unavailable</p>
+        )}
+
+        <div className="pdp-links">
+          <Link href="/products">← Continue shopping</Link>
+          <Link href="/checkout">Checkout</Link>
         </div>
       </div>
     </div>
