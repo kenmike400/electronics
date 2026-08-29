@@ -11,7 +11,7 @@ type CartItem = {
   image_url?: string;
 };
 
-/** STEP80: 80% off items ≥ 2000 KSh, 50% off items under 2000 KSh */
+/** September80: 80% off items ≥ 2000 KSh, 50% off items under 2000 KSh */
 function applyStep80(items: CartItem[]) {
   let discount = 0;
   const lines = items.map((i) => {
@@ -69,16 +69,16 @@ export default function CheckoutPage() {
 
   function tryApplyPromo() {
     const code = promo.trim().toLowerCase();
-    if (code === "step80") {
+    if (code === "september80") {
       setPromoApplied(true);
       setPromoMsg(
-        "STEP80 applied! 80% off items KSh 2,000+ · 50% off items under KSh 2,000"
+        "September80 applied! 80% off items KSh 2,000+ · 50% off items under KSh 2,000"
       );
       setError("");
     } else {
       setPromoApplied(false);
       setPromoMsg("");
-      setError("Invalid code. Use STEP80");
+      setError("Invalid code. Use September80");
     }
   }
 
@@ -119,7 +119,7 @@ export default function CheckoutPage() {
           subtotal,
           discount: promoApplied ? discount : 0,
           total,
-          promo_code: promoApplied ? "STEP80" : null,
+          promo_code: promoApplied ? "September80" : null,
           payment_method: "mpesa",
         }),
       });
@@ -157,7 +157,7 @@ export default function CheckoutPage() {
     <>
       <h1>Checkout — M-Pesa only</h1>
       <p className="subtitle">
-        Secure payment · Use code <strong>STEP80</strong> for site-wide discounts
+        Secure payment · Use code <strong>September80</strong> for site-wide discounts
       </p>
 
       {error && <div className="alert alert-error">{error}</div>}
@@ -215,7 +215,7 @@ export default function CheckoutPage() {
           <label>Promo code</label>
           <div style={{ display: "flex", gap: 8 }}>
             <input
-              placeholder="Code is STEP80"
+              placeholder="Code is September80"
               value={promo}
               onChange={(e) => setPromo(e.target.value)}
               style={{ flex: 1 }}
@@ -231,7 +231,7 @@ export default function CheckoutPage() {
             </button>
           </div>
           <p style={{ fontSize: 12, color: "#75757a", marginTop: 4 }}>
-            Code works in any case (step80 / STEP80). 80% off items ≥ KSh 2,000 · 50% off items under KSh 2,000.
+            Code works in any case (september80 / September80). 80% off items ≥ KSh 2,000 · 50% off items under KSh 2,000.
           </p>
 
           <div
@@ -257,7 +257,7 @@ export default function CheckoutPage() {
                   fontWeight: 600,
                 }}
               >
-                <span>STEP80 discount</span>
+                <span>September80 discount</span>
                 <span>− KSh {discount.toLocaleString()}</span>
               </div>
             )}

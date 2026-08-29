@@ -115,9 +115,9 @@ export default function RootLayout({
 
         <div className="promo-banner" aria-label="Promotion">
           <div className="promo-track">
-            <span>🔥 EVERYTHING UP TO 80% OFF — USE CODE <strong>STEP80</strong> AT CHECKOUT · Items over KSh 2,000 get 80% off · Items under KSh 2,000 get 50% off · </span>
-            <span>🔥 EVERYTHING UP TO 80% OFF — USE CODE <strong>STEP80</strong> AT CHECKOUT · Items over KSh 2,000 get 80% off · Items under KSh 2,000 get 50% off · </span>
-            <span>🔥 EVERYTHING UP TO 80% OFF — USE CODE <strong>STEP80</strong> AT CHECKOUT · Items over KSh 2,000 get 80% off · Items under KSh 2,000 get 50% off · </span>
+            <span>🔥 EVERYTHING UP TO 80% OFF — USE CODE <strong>September80</strong> AT CHECKOUT · Items over KSh 2,000 get 80% off · Items under KSh 2,000 get 50% off · </span>
+            <span>🔥 EVERYTHING UP TO 80% OFF — USE CODE <strong>September80</strong> AT CHECKOUT · Items over KSh 2,000 get 80% off · Items under KSh 2,000 get 50% off · </span>
+            <span>🔥 EVERYTHING UP TO 80% OFF — USE CODE <strong>September80</strong> AT CHECKOUT · Items over KSh 2,000 get 80% off · Items under KSh 2,000 get 50% off · </span>
           </div>
         </div>
 
