@@ -4,62 +4,102 @@ import { FALLBACK_PRODUCTS } from "@/lib/products-fallback";
 
 export const dynamic = "force-dynamic";
 
-async function getProducts() {
+async function getProducts(q?: string, cat?: string) {
+  let list = FALLBACK_PRODUCTS;
   try {
     const { data, error } = await supabase
       .from("products")
       .select("*")
       .eq("active", true)
       .order("name");
-    if (!error && data && data.length > 0) return data;
+    if (!error && data && data.length > 0) list = data;
   } catch {
     /* fallback */
   }
-  return FALLBACK_PRODUCTS;
+  if (q) {
+    const s = q.toLowerCase();
+    list = list.filter(
+      (p) =>
+        p.name.toLowerCase().includes(s) ||
+        (p.brand || "").toLowerCase().includes(s) ||
+        (p.category || "").toLowerCase().includes(s)
+    );
+  }
+  if (cat) {
+    const c = cat.toLowerCase();
+    list = list.filter((p) => (p.category || "").toLowerCase().includes(c) || p.name.toLowerCase().includes(c));
+  }
+  return list;
 }
 
-export default async function ProductsPage() {
-  const products = await getProducts();
+function disc(price: number, compare?: number | null) {
+  if (!compare || compare <= price) return null;
+  return Math.round(((compare - price) / compare) * 100);
+}
+
+export default async function ProductsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; cat?: string }>;
+}) {
+  const sp = await searchParams;
+  const products = await getProducts(sp.q, sp.cat);
 
   return (
     <>
-      <h1>All products</h1>
-      <p className="subtitle">
-        {products.length} items · Pay with M-Pesa at checkout
-      </p>
-      <div className="grid">
-        {products.map((p) => (
-          <article key={p.id || p.slug} className="card">
-            <img
-              src={p.image_url || "/images/jumia-logo.png"}
-              alt={p.name}
-            />
-            <div className="card-body">
-              <p style={{ fontSize: "0.8rem", color: "#888" }}>
-                {p.brand} · {p.category}
-              </p>
-              <h3>{p.name}</h3>
-              <div>
-                <span className="price">
-                  KSh {Number(p.price).toLocaleString()}
-                </span>
-                {p.compare_at_price && (
-                  <span className="compare">
-                    KSh {Number(p.compare_at_price).toLocaleString()}
-                  </span>
-                )}
-              </div>
-              <Link
-                href={`/products/${p.slug}`}
-                className="btn btn-block"
-                style={{ marginTop: 12 }}
-              >
-                View
-              </Link>
-            </div>
-          </article>
-        ))}
+      <div className="section-head">
+        <h2>
+          {sp.cat || sp.q || "All products"}{" "}
+          <span style={{ color: "#75757a", fontWeight: 400, fontSize: 14 }}>
+            ({products.length} items)
+          </span>
+        </h2>
+        <span style={{ fontSize: 13, color: "#75757a" }}>Pay with M-Pesa</span>
       </div>
+      <div className="prd-grid">
+        {products.map((p) => {
+          const d = disc(Number(p.price), p.compare_at_price);
+          return (
+            <article key={p.id || p.slug} className="prd">
+              <Link href={`/products/${p.slug}`}>
+                <div className="prd-img">
+                  {d ? <span className="prd-badge">-{d}%</span> : null}
+                  <img
+                    src={p.image_url || "/images/jumia-logo.png"}
+                    alt={p.name}
+                    loading="lazy"
+                  />
+                </div>
+                <div className="prd-body">
+                  <div className="prd-name">{p.name}</div>
+                  <div className="prd-price">
+                    KSh {Number(p.price).toLocaleString()}
+                  </div>
+                  {p.compare_at_price ? (
+                    <div className="prd-old">
+                      KSh {Number(p.compare_at_price).toLocaleString()}
+                    </div>
+                  ) : null}
+                  <div className="prd-ship">Jumia Express</div>
+                </div>
+              </Link>
+              <div className="prd-body" style={{ paddingTop: 0 }}>
+                <Link href={`/products/${p.slug}`} className="prd-btn">
+                  View · Add to cart
+                </Link>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+      {products.length === 0 && (
+        <div className="empty">
+          <h1>No products found</h1>
+          <Link href="/products" className="btn" style={{ marginTop: 16 }}>
+            Browse all
+          </Link>
+        </div>
+      )}
     </>
   );
 }

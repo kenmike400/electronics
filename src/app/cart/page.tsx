@@ -52,154 +52,88 @@ export default function CartPage() {
     return (
       <div className="empty">
         <h1>Your cart is empty</h1>
+        <p className="subtitle">Browse products and add items to cart</p>
         <Link href="/products" className="btn" style={{ marginTop: 16 }}>
-          Browse products
+          Continue shopping
         </Link>
       </div>
     );
   }
 
   return (
-    <>
-      <h1>Cart ({items.length})</h1>
-      <p className="subtitle">Review items then proceed to M-Pesa checkout</p>
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "minmax(0, 1fr) 320px",
-          gap: 24,
-          alignItems: "start",
-        }}
-      >
-        <div
-          style={{
-            background: "#fff",
-            borderRadius: 8,
-            border: "1px solid #e5e5e5",
-            padding: 16,
-          }}
-        >
-          {items.map((i) => (
-            <div
-              key={i.id}
-              style={{
-                display: "flex",
-                gap: 16,
-                padding: "16px 0",
-                borderBottom: "1px solid #eee",
-                alignItems: "center",
-                flexWrap: "wrap",
-              }}
-            >
-              <img
-                src={i.image_url || "/images/jumia-logo.png"}
-                alt={i.name}
-                width={80}
-                height={80}
-                style={{
-                  objectFit: "contain",
-                  borderRadius: 8,
-                  background: "#fafafa",
-                  border: "1px solid #eee",
-                }}
-              />
-              <div style={{ flex: 1, minWidth: 180 }}>
-                <Link
-                  href={`/products/${i.slug}`}
-                  style={{ fontWeight: 600, color: "#282828" }}
-                >
-                  {i.name}
-                </Link>
-                <p style={{ margin: "6px 0", color: "#f68b1e", fontWeight: 700 }}>
-                  KSh {Number(i.price).toLocaleString()}
-                </p>
-                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                  <button
-                    type="button"
-                    className="btn btn-outline"
-                    style={{ padding: "4px 10px", minWidth: 36 }}
-                    onClick={() => updateQty(i.id, i.qty - 1)}
-                  >
+    <div className="layout-2">
+      <div className="panel">
+        <h1>Cart ({items.length})</h1>
+        {items.map((i) => (
+          <div key={i.id} className="cart-row">
+            <img
+              src={i.image_url || "/images/jumia-logo.png"}
+              alt={i.name}
+            />
+            <div className="info">
+              <h3>
+                <Link href={`/products/${i.slug}`}>{i.name}</Link>
+              </h3>
+              <div className="prd-price" style={{ marginBottom: 8 }}>
+                KSh {Number(i.price).toLocaleString()}
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <div className="qty-ctrl">
+                  <button type="button" onClick={() => updateQty(i.id, i.qty - 1)}>
                     −
                   </button>
-                  <span style={{ minWidth: 24, textAlign: "center" }}>{i.qty}</span>
-                  <button
-                    type="button"
-                    className="btn btn-outline"
-                    style={{ padding: "4px 10px", minWidth: 36 }}
-                    onClick={() => updateQty(i.id, i.qty + 1)}
-                  >
+                  <span>{i.qty}</span>
+                  <button type="button" onClick={() => updateQty(i.id, i.qty + 1)}>
                     +
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => remove(i.id)}
-                    style={{
-                      marginLeft: 12,
-                      background: "none",
-                      border: "none",
-                      color: "#f68b1e",
-                      cursor: "pointer",
-                      fontWeight: 600,
-                    }}
-                  >
-                    Remove
-                  </button>
                 </div>
-              </div>
-              <div style={{ fontWeight: 700 }}>
-                KSh {(Number(i.price) * i.qty).toLocaleString()}
+                <button
+                  type="button"
+                  onClick={() => remove(i.id)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "#e61601",
+                    fontSize: 13,
+                    fontWeight: 600,
+                  }}
+                >
+                  Remove
+                </button>
               </div>
             </div>
-          ))}
-        </div>
-
-        <aside
-          style={{
-            background: "#fff",
-            borderRadius: 8,
-            border: "1px solid #e5e5e5",
-            padding: 20,
-          }}
-        >
-          <h2 style={{ marginTop: 0, fontSize: "1rem" }}>CART SUMMARY</h2>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              margin: "12px 0",
-            }}
-          >
-            <span>Item&apos;s total ({items.length})</span>
-            <strong>KSh {total.toLocaleString()}</strong>
+            <div style={{ fontWeight: 700, whiteSpace: "nowrap" }}>
+              KSh {(Number(i.price) * i.qty).toLocaleString()}
+            </div>
           </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: 16,
-              fontSize: "1.1rem",
-            }}
-          >
-            <span>Subtotal</span>
-            <strong>KSh {total.toLocaleString()}</strong>
-          </div>
-          <Link href="/checkout" className="btn btn-block">
-            Checkout (KSh {total.toLocaleString()})
-          </Link>
-          <Link
-            href="/products"
-            className="btn btn-outline btn-block"
-            style={{ marginTop: 10, display: "block", textAlign: "center" }}
-          >
+        ))}
+        <div style={{ marginTop: 16 }}>
+          <Link href="/products" className="btn btn-outline">
             Continue shopping
           </Link>
-          <p style={{ fontSize: "0.85rem", color: "#666", marginTop: 12 }}>
-            Payment: <strong>M-Pesa only</strong>
-          </p>
-        </aside>
+        </div>
       </div>
-    </>
+      <div className="cart-summary">
+        <h2 style={{ marginBottom: 16, fontSize: 16 }}>CART SUMMARY</h2>
+        <div className="line">
+          <span>Subtotal</span>
+          <strong>KSh {total.toLocaleString()}</strong>
+        </div>
+        <div className="line">
+          <span>Delivery</span>
+          <span style={{ color: "#27ae60" }}>Calculated at checkout</span>
+        </div>
+        <div className="line total">
+          <span>Total</span>
+          <span>KSh {total.toLocaleString()}</span>
+        </div>
+        <p style={{ margin: "12px 0" }}>
+          <span className="mpesa-badge">M-Pesa only</span>
+        </p>
+        <Link href="/checkout" className="btn btn-block">
+          Checkout (M-Pesa)
+        </Link>
+      </div>
+    </div>
   );
 }

@@ -11,61 +11,119 @@ async function getProducts() {
       .select("*")
       .eq("active", true)
       .order("created_at", { ascending: false })
-      .limit(24);
+      .limit(36);
     if (!error && data && data.length > 0) return data;
   } catch {
-    /* use fallback */
+    /* fallback */
   }
   return FALLBACK_PRODUCTS;
 }
 
+function disc(price: number, compare?: number | null) {
+  if (!compare || compare <= price) return null;
+  return Math.round(((compare - price) / compare) * 100);
+}
+
 export default async function HomePage() {
   const products = await getProducts();
+  const featured = products.slice(0, 12);
+  const more = products.slice(12, 36);
 
   return (
     <>
-      <section className="hero">
-        <h1>Jumia Kenya Electronics</h1>
-        <p className="subtitle">
-          Shop TVs, phones, appliances, cookware & more. Pay with{" "}
-          <strong>M-Pesa only</strong>. Fast delivery across Kenya.
-        </p>
+      <section className="hero-banner">
+        <div>
+          <h1>Jumia Kenya Electronics</h1>
+          <p>
+            Phones, TVs, headphones, appliances &amp; more. Official deals ·
+            Pay with <strong>M-Pesa only</strong> · Fast delivery across Kenya.
+          </p>
+        </div>
         <Link href="/products" className="btn">
-          Browse all products
+          Shop all products
         </Link>
       </section>
 
-      <h2 style={{ marginBottom: 16 }}>Featured deals</h2>
-      <div className="grid">
-        {products.map((p) => (
-          <article key={p.id || p.slug} className="card">
-            <img
-              src={p.image_url || "/images/jumia-logo.png"}
-              alt={p.name}
-            />
-            <div className="card-body">
-              <h3>{p.name}</h3>
-              <div>
-                <span className="price">
-                  KSh {Number(p.price).toLocaleString()}
-                </span>
-                {p.compare_at_price && (
-                  <span className="compare">
-                    KSh {Number(p.compare_at_price).toLocaleString()}
-                  </span>
-                )}
-              </div>
-              <Link
-                href={`/products/${p.slug}`}
-                className="btn btn-block"
-                style={{ marginTop: 12 }}
-              >
-                View product
-              </Link>
-            </div>
-          </article>
-        ))}
+      <div className="section-head">
+        <h2>Top deals</h2>
+        <Link href="/products">See all →</Link>
       </div>
+      <div className="prd-grid">
+        {featured.map((p) => {
+          const d = disc(Number(p.price), p.compare_at_price);
+          return (
+            <article key={p.id || p.slug} className="prd">
+              <Link href={`/products/${p.slug}`}>
+                <div className="prd-img">
+                  {d ? <span className="prd-badge">-{d}%</span> : null}
+                  <img
+                    src={p.image_url || "/images/jumia-logo.png"}
+                    alt={p.name}
+                    loading="lazy"
+                  />
+                </div>
+                <div className="prd-body">
+                  <div className="prd-name">{p.name}</div>
+                  <div className="prd-price">
+                    KSh {Number(p.price).toLocaleString()}
+                  </div>
+                  {p.compare_at_price ? (
+                    <div className="prd-old">
+                      KSh {Number(p.compare_at_price).toLocaleString()}
+                    </div>
+                  ) : null}
+                  <div className="prd-ship">Jumia Express</div>
+                </div>
+              </Link>
+              <div className="prd-body" style={{ paddingTop: 0 }}>
+                <Link href={`/products/${p.slug}`} className="prd-btn">
+                  Add to cart
+                </Link>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+
+      {more.length > 0 && (
+        <>
+          <div className="section-head">
+            <h2>More for you</h2>
+            <Link href="/products">See all →</Link>
+          </div>
+          <div className="prd-grid">
+            {more.map((p) => {
+              const d = disc(Number(p.price), p.compare_at_price);
+              return (
+                <article key={p.id || p.slug} className="prd">
+                  <Link href={`/products/${p.slug}`}>
+                    <div className="prd-img">
+                      {d ? <span className="prd-badge">-{d}%</span> : null}
+                      <img
+                        src={p.image_url || "/images/jumia-logo.png"}
+                        alt={p.name}
+                        loading="lazy"
+                      />
+                    </div>
+                    <div className="prd-body">
+                      <div className="prd-name">{p.name}</div>
+                      <div className="prd-price">
+                        KSh {Number(p.price).toLocaleString()}
+                      </div>
+                      {p.compare_at_price ? (
+                        <div className="prd-old">
+                          KSh {Number(p.compare_at_price).toLocaleString()}
+                        </div>
+                      ) : null}
+                      <div className="prd-ship">Jumia Express</div>
+                    </div>
+                  </Link>
+                </article>
+              );
+            })}
+          </div>
+        </>
+      )}
     </>
   );
 }

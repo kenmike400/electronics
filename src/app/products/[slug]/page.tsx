@@ -29,43 +29,53 @@ export default async function ProductPage({
   if (!product) product = getFallbackBySlug(slug);
   if (!product) notFound();
 
+  const price = Number(product.price);
+  const compare = product.compare_at_price
+    ? Number(product.compare_at_price)
+    : null;
+  const disc =
+    compare && compare > price
+      ? Math.round(((compare - price) / compare) * 100)
+      : null;
+
   return (
-    <div className="product-detail">
-      <div>
+    <div className="pdp">
+      <div className="pdp-gallery">
         <img
           src={product.image_url || "/images/jumia-logo.png"}
           alt={product.name}
-          style={{
-            width: "100%",
-            borderRadius: 12,
-            background: "#fff",
-            border: "1px solid #e5e5e5",
-          }}
         />
       </div>
-      <div>
-        <p style={{ color: "#666", marginBottom: 4 }}>
+      <div className="pdp-info">
+        <p className="pdp-brand">
           {product.brand} · {product.category}
         </p>
         <h1>{product.name}</h1>
         <div style={{ margin: "16px 0" }}>
-          <span className="price" style={{ fontSize: "1.5rem" }}>
-            KSh {Number(product.price).toLocaleString()}
-          </span>
-          {product.compare_at_price && (
-            <span className="compare">
-              KSh {Number(product.compare_at_price).toLocaleString()}
+          <div className="pdp-price">KSh {price.toLocaleString()}</div>
+          {compare ? (
+            <span>
+              <span className="pdp-old">KSh {compare.toLocaleString()}</span>
+              {disc ? <span className="pdp-disc">-{disc}%</span> : null}
             </span>
-          )}
+          ) : null}
         </div>
-        <p style={{ marginBottom: 20 }}>{product.description}</p>
+        <p style={{ marginBottom: 16, color: "#75757a" }}>
+          {product.description}
+        </p>
+        <p style={{ marginBottom: 16 }}>
+          <span className="mpesa-badge">Pay with M-Pesa</span>
+        </p>
         <p
           style={{
             marginBottom: 16,
-            color: product.stock > 0 ? "green" : "red",
+            color: product.stock > 0 ? "#27ae60" : "#e61601",
+            fontWeight: 600,
           }}
         >
-          {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
+          {product.stock > 0
+            ? `In stock (${product.stock} units)`
+            : "Out of stock"}
         </p>
         <AddToCartButton product={product} />
         <div style={{ marginTop: 16, display: "flex", gap: 12, flexWrap: "wrap" }}>
@@ -76,9 +86,9 @@ export default async function ProductPage({
             Checkout (M-Pesa)
           </Link>
         </div>
-        <p style={{ marginTop: 24, fontSize: "0.9rem", color: "#666" }}>
-          Payment method: <strong>M-Pesa only</strong>. After successful payment
-          you will receive a receipt and be redirected to jumia.co.ke.
+        <p style={{ marginTop: 24, fontSize: 13, color: "#75757a" }}>
+          Jumia Express · Delivery across Kenya · After successful M-Pesa
+          payment you are redirected to jumia.co.ke
         </p>
       </div>
     </div>
