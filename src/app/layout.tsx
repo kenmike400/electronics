@@ -108,6 +108,7 @@ export default function RootLayout({
             <a href="/products?cat=Grocery">Grocery</a>
             <a href="/products?cat=Appliances">Appliances</a>
             <a href="/products?cat=Cooktops">Cooktops</a>
+            <a href="/products?cat=Shoes">Shoes</a>
             <a href="/products?cat=Cookware">Cookware</a>
             <a href="/checkout">Checkout</a>
           </div>
