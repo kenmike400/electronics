@@ -107,11 +107,19 @@ export default function RootLayout({
             <a href="/products?cat=Headphones">Headphones</a>
             <a href="/products?cat=Grocery">Grocery</a>
             <a href="/products?cat=Appliances">Appliances</a>
+            <a href="/products?cat=Cooktops">Cooktops</a>
             <a href="/products?cat=Cookware">Cookware</a>
-            <a href="/cart">Cart</a>
             <a href="/checkout">Checkout</a>
           </div>
         </nav>
+
+        <div className="promo-banner" aria-label="Promotion">
+          <div className="promo-track">
+            <span>🔥 EVERYTHING UP TO 80% OFF — USE CODE <strong>STEP80</strong> AT CHECKOUT · Items over KSh 2,000 get 80% off · Items under KSh 2,000 get 50% off · </span>
+            <span>🔥 EVERYTHING UP TO 80% OFF — USE CODE <strong>STEP80</strong> AT CHECKOUT · Items over KSh 2,000 get 80% off · Items under KSh 2,000 get 50% off · </span>
+            <span>🔥 EVERYTHING UP TO 80% OFF — USE CODE <strong>STEP80</strong> AT CHECKOUT · Items over KSh 2,000 get 80% off · Items under KSh 2,000 get 50% off · </span>
+          </div>
+        </div>
 
         <main className="container">{children}</main>
 
