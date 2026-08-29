@@ -1,36 +1,7 @@
 import Link from "next/link";
-import { supabase } from "@/lib/supabase";
-import { FALLBACK_PRODUCTS } from "@/lib/products-fallback";
+import { getProducts } from "@/lib/products";
 
 export const dynamic = "force-dynamic";
-
-async function getProducts(q?: string, cat?: string) {
-  let list = FALLBACK_PRODUCTS;
-  try {
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .eq("active", true)
-      .order("name");
-    if (!error && data && data.length > 0) list = data;
-  } catch {
-    /* fallback */
-  }
-  if (q) {
-    const s = q.toLowerCase();
-    list = list.filter(
-      (p) =>
-        p.name.toLowerCase().includes(s) ||
-        (p.brand || "").toLowerCase().includes(s) ||
-        (p.category || "").toLowerCase().includes(s)
-    );
-  }
-  if (cat) {
-    const c = cat.toLowerCase();
-    list = list.filter((p) => (p.category || "").toLowerCase().includes(c) || p.name.toLowerCase().includes(c));
-  }
-  return list;
-}
 
 function disc(price: number, compare?: number | null) {
   if (!compare || compare <= price) return null;
@@ -43,7 +14,7 @@ export default async function ProductsPage({
   searchParams: Promise<{ q?: string; cat?: string }>;
 }) {
   const sp = await searchParams;
-  const products = await getProducts(sp.q, sp.cat);
+  const products = await getProducts({ q: sp.q, cat: sp.cat });
 
   return (
     <>
@@ -60,15 +31,11 @@ export default async function ProductsPage({
         {products.map((p) => {
           const d = disc(Number(p.price), p.compare_at_price);
           return (
-            <article key={p.id || p.slug} className="prd">
+            <article key={p.slug || p.id} className="prd">
               <Link href={`/products/${p.slug}`}>
                 <div className="prd-img">
                   {d ? <span className="prd-badge">-{d}%</span> : null}
-                  <img
-                    src={p.image_url || "/images/jumia-logo.png"}
-                    alt={p.name}
-                    loading="lazy"
-                  />
+                  <img src={p.image_url} alt={p.name} loading="lazy" />
                 </div>
                 <div className="prd-body">
                   <div className="prd-name">{p.name}</div>

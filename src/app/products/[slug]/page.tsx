@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { supabase } from "@/lib/supabase";
-import { getFallbackBySlug } from "@/lib/products-fallback";
+import { getProductBySlug } from "@/lib/products";
 import AddToCartButton from "@/components/AddToCartButton";
 
 export const dynamic = "force-dynamic";
@@ -12,21 +11,7 @@ export default async function ProductPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  let product: any = null;
-
-  try {
-    const { data } = await supabase
-      .from("products")
-      .select("*")
-      .eq("slug", slug)
-      .eq("active", true)
-      .maybeSingle();
-    product = data;
-  } catch {
-    /* fallback */
-  }
-
-  if (!product) product = getFallbackBySlug(slug);
+  const product = await getProductBySlug(slug);
   if (!product) notFound();
 
   const price = Number(product.price);
@@ -41,10 +26,7 @@ export default async function ProductPage({
   return (
     <div className="pdp">
       <div className="pdp-gallery">
-        <img
-          src={product.image_url || "/images/jumia-logo.png"}
-          alt={product.name}
-        />
+        <img src={product.image_url} alt={product.name} />
       </div>
       <div className="pdp-info">
         <p className="pdp-brand">
@@ -86,10 +68,6 @@ export default async function ProductPage({
             Checkout (M-Pesa)
           </Link>
         </div>
-        <p style={{ marginTop: 24, fontSize: 13, color: "#75757a" }}>
-          Jumia Express · Delivery across Kenya · After successful M-Pesa
-          payment you are redirected to jumia.co.ke
-        </p>
       </div>
     </div>
   );

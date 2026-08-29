@@ -1,23 +1,7 @@
 import Link from "next/link";
-import { supabase } from "@/lib/supabase";
-import { FALLBACK_PRODUCTS } from "@/lib/products-fallback";
+import { getProducts } from "@/lib/products";
 
 export const dynamic = "force-dynamic";
-
-async function getProducts() {
-  try {
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .eq("active", true)
-      .order("created_at", { ascending: false })
-      .limit(36);
-    if (!error && data && data.length > 0) return data;
-  } catch {
-    /* fallback */
-  }
-  return FALLBACK_PRODUCTS;
-}
 
 function disc(price: number, compare?: number | null) {
   if (!compare || compare <= price) return null;
@@ -25,7 +9,7 @@ function disc(price: number, compare?: number | null) {
 }
 
 export default async function HomePage() {
-  const products = await getProducts();
+  const products = await getProducts({ limit: 36 });
   const featured = products.slice(0, 12);
   const more = products.slice(12, 36);
 
@@ -33,10 +17,10 @@ export default async function HomePage() {
     <>
       <section className="hero-banner">
         <div>
-          <h1>Jumia Kenya Electronics</h1>
+          <h1>Jumia Kenya</h1>
           <p>
-            Phones, TVs, headphones, appliances &amp; more. Official deals ·
-            Pay with <strong>M-Pesa only</strong> · Fast delivery across Kenya.
+            Phones, TVs, headphones, groceries &amp; more. Pay with{" "}
+            <strong>M-Pesa only</strong>. Fast delivery across Kenya.
           </p>
         </div>
         <Link href="/products" className="btn">
@@ -52,12 +36,12 @@ export default async function HomePage() {
         {featured.map((p) => {
           const d = disc(Number(p.price), p.compare_at_price);
           return (
-            <article key={p.id || p.slug} className="prd">
+            <article key={p.slug || p.id} className="prd">
               <Link href={`/products/${p.slug}`}>
                 <div className="prd-img">
                   {d ? <span className="prd-badge">-{d}%</span> : null}
                   <img
-                    src={p.image_url || "/images/jumia-logo.png"}
+                    src={p.image_url}
                     alt={p.name}
                     loading="lazy"
                   />
@@ -95,15 +79,11 @@ export default async function HomePage() {
             {more.map((p) => {
               const d = disc(Number(p.price), p.compare_at_price);
               return (
-                <article key={p.id || p.slug} className="prd">
+                <article key={p.slug || p.id} className="prd">
                   <Link href={`/products/${p.slug}`}>
                     <div className="prd-img">
                       {d ? <span className="prd-badge">-{d}%</span> : null}
-                      <img
-                        src={p.image_url || "/images/jumia-logo.png"}
-                        alt={p.name}
-                        loading="lazy"
-                      />
+                      <img src={p.image_url} alt={p.name} loading="lazy" />
                     </div>
                     <div className="prd-body">
                       <div className="prd-name">{p.name}</div>
