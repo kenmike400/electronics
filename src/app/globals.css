@@ -936,3 +936,48 @@ input:focus, textarea:focus, select:focus {
   .ha-text { display: none; }
   .ha-link { padding: 6px; }
 }
+
+/* Pagination */
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 28px 0 12px;
+  padding: 16px;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.06);
+}
+.page-btn, .page-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--jm-text);
+}
+.page-btn:hover, .page-num:hover {
+  border-color: var(--jm-orange);
+  color: var(--jm-orange);
+}
+.page-num.active {
+  background: var(--jm-orange);
+  border-color: var(--jm-orange);
+  color: #fff !important;
+}
+.page-btn.disabled {
+  opacity: .4;
+  pointer-events: none;
+}
+.page-ellipsis {
+  padding: 0 4px;
+  color: #999;
+}

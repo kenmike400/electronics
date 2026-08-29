@@ -29,7 +29,7 @@ export async function getProducts(opts?: {
       .select("*")
       .eq("active", true)
       .order("created_at", { ascending: false })
-      .limit(opts?.limit ? opts.limit * 3 : 500);
+      .limit(opts?.limit ? Math.min(opts.limit * 2, 3000) : 3000);
     if (!error && data && data.length > 0) {
       list = data as Product[];
     }
@@ -44,7 +44,8 @@ export async function getProducts(opts?: {
   list = dedupeByImage(list);
 
   // If still thin, merge unique fallback items
-  if (list.length < 24) {
+  // Merge fallback so catalog stays large even if Supabase is partial
+  {
     const extra = dedupeByImage(FALLBACK_PRODUCTS);
     const have = new Set(list.map((p) => p.image_url));
     for (const p of extra) {
