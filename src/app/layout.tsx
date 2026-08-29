@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import HeaderActions from "@/components/HeaderActions";
+import PromoCountdown from "@/components/PromoCountdown";
 
 export const metadata: Metadata = {
   title: "Jumia Kenya | Online Shopping for Electronics, Phones, Grocery & More",
@@ -93,9 +94,9 @@ export default function RootLayout({
 
         <div className="promo-banner" aria-label="Promotion September80">
           <div className="promo-track">
-            <span>🔥 EVERYTHING UP TO 80% OFF — CODE <strong>September80</strong> · Items KSh 2,000+ → 80% OFF · Items under KSh 2,000 → 50% OFF · Site-wide at checkout · </span>
-            <span>🔥 EVERYTHING UP TO 80% OFF — CODE <strong>September80</strong> · Items KSh 2,000+ → 80% OFF · Items under KSh 2,000 → 50% OFF · Site-wide at checkout · </span>
-            <span>🔥 EVERYTHING UP TO 80% OFF — CODE <strong>September80</strong> · Items KSh 2,000+ → 80% OFF · Items under KSh 2,000 → 50% OFF · Site-wide at checkout · </span>
+            <span>🔥 EVERYTHING UP TO 80% OFF — CODE <strong>September80</strong> · Items KSh 2,000+ → 80% OFF · under KSh 2,000 → 50% OFF <PromoCountdown /> Site-wide at checkout · </span>
+            <span>🔥 EVERYTHING UP TO 80% OFF — CODE <strong>September80</strong> · Items KSh 2,000+ → 80% OFF · under KSh 2,000 → 50% OFF <PromoCountdown /> Site-wide at checkout · </span>
+            <span>🔥 EVERYTHING UP TO 80% OFF — CODE <strong>September80</strong> · Items KSh 2,000+ → 80% OFF · under KSh 2,000 → 50% OFF <PromoCountdown /> Site-wide at checkout · </span>
           </div>
         </div>
 

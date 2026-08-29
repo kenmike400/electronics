@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { COUNTIES, getSubs } from "@/lib/counties";
+import PromoCountdown from "@/components/PromoCountdown";
 
 type CartItem = {
   id: string;
@@ -193,6 +194,7 @@ export default function CheckoutPage() {
         One place: location + payment · Code <strong>September80</strong> · Orders
         &amp; emails saved securely
       </p>
+      <PromoCountdown variant="checkout" />
 
       {error && <div className="alert alert-error">{error}</div>}
       {promoMsg && (
