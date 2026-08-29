@@ -29,6 +29,7 @@ export default function CartPage() {
   function persist(next: CartItem[]) {
     setItems(next);
     localStorage.setItem("cart", JSON.stringify(next));
+    if (typeof window !== "undefined") window.dispatchEvent(new Event("cart-updated"));
   }
 
   function updateQty(id: string, qty: number) {

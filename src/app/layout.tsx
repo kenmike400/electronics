@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import HeaderActions from "@/components/HeaderActions";
 
 export const metadata: Metadata = {
   title: "Jumia Kenya | Online Shopping for Electronics, Phones, Grocery & More",
@@ -71,31 +72,7 @@ export default function RootLayout({
               />
               <button type="submit">SEARCH</button>
             </form>
-            <div className="header-actions">
-              <a href="/account" title="Account">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="8" r="4" />
-                  <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
-                </svg>
-                <span>Account</span>
-              </a>
-              <a href="/checkout" title="Help">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M12 16v-4M12 8h.01" />
-                </svg>
-                <span>Help</span>
-              </a>
-              <a href="/cart" title="Cart">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M6 6h15l-1.5 9h-12z" />
-                  <circle cx="9" cy="20" r="1.5" />
-                  <circle cx="18" cy="20" r="1.5" />
-                  <path d="M6 6L5 3H2" />
-                </svg>
-                <span>Cart</span>
-              </a>
-            </div>
+            <HeaderActions />
           </div>
         </header>
 

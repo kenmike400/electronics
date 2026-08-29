@@ -39,6 +39,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
         qty,
       });
     localStorage.setItem("cart", JSON.stringify(cart));
+    window.dispatchEvent(new Event("cart-updated"));
   }
 
   function payMpesa() {

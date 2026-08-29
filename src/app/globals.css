@@ -888,3 +888,51 @@ input:focus, textarea:focus, select:focus {
   font-size: 14px;
   background: #fff;
 }
+
+/* Header actions + cart badge */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  color: #fff;
+}
+.ha-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff !important;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.ha-link:hover {
+  background: rgba(255,255,255,.12);
+  color: #fff !important;
+}
+.ha-text { white-space: nowrap; }
+.ha-cart-icon {
+  position: relative;
+  display: inline-flex;
+}
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #e61601;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  box-shadow: 0 0 0 2px #f68b1e;
+}
+@media (max-width: 720px) {
+  .ha-text { display: none; }
+  .ha-link { padding: 6px; }
+}
