@@ -120,31 +120,48 @@ export async function POST(req: NextRequest) {
       })),
     });
 
+    let emailSent = false;
+    let emailError: string | null = null;
     const resendKey = process.env.RESEND_API_KEY;
     if (resendKey) {
       try {
-        await fetch("https://api.resend.com/emails", {
+        const from =
+          process.env.RESEND_FROM ||
+          "Jumia Electronics <orders@jumia-kenya-electronics-shop-jumia.bbroot.com>";
+        const res = await fetch("https://api.resend.com/emails", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${resendKey}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            from: process.env.RESEND_FROM || "orders@jumia-electronics.shop",
-            to: email,
+            from,
+            to: [email],
             subject: `Order ${onum} — Jumia Electronics (M-Pesa)`,
             html: receiptHtml,
           }),
         });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.id) {
+          emailSent = true;
+        } else {
+          emailError = data?.message || data?.error || `Resend ${res.status}`;
+          console.error("Resend failed", data);
+        }
       } catch (e) {
+        emailError = e instanceof Error ? e.message : "Resend network error";
         console.error("Resend error", e);
       }
+    } else {
+      emailError = "RESEND_API_KEY not configured";
     }
 
     return NextResponse.json({
       ok: true,
       order_number: onum,
       id: orderId,
+      email_sent: emailSent,
+      email_error: emailError,
       receipt_html: receiptHtml,
       redirect_url: "https://www.jumia.co.ke/",
     });
