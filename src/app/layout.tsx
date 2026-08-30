@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import HeaderActions from "@/components/HeaderActions";
+import SearchBox from "@/components/SearchBox";
 import PromoCountdown from "@/components/PromoCountdown";
 
 export const metadata: Metadata = {
@@ -64,15 +65,7 @@ export default function RootLayout({
                 }}
               />
             </a>
-            <form className="search-wrap" action="/products" method="get">
-              <input
-                type="search"
-                name="q"
-                placeholder="Search products, brands and categories"
-                aria-label="Search"
-              />
-              <button type="submit">SEARCH</button>
-            </form>
+            <SearchBox />
             <HeaderActions />
           </div>
         </header>
