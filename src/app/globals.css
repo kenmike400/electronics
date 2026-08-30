@@ -1145,3 +1145,20 @@ input:focus, textarea:focus, select:focus {
 .search-see-all:hover {
   background: #fff5eb;
 }
+
+/* Home in category strip */
+.cat-strip-inner a.cat-home,
+.cat-strip-inner .cat-home {
+  color: var(--jm-orange) !important;
+  font-weight: 700;
+  border-bottom: 2px solid var(--jm-orange);
+  padding-bottom: 2px;
+}
+.topbar a.jumia-pay-link {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 600;
+}
+.topbar a.jumia-pay-link:hover {
+  color: var(--jm-orange);
+}

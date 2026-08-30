@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import "./globals.css";
 import HeaderActions from "@/components/HeaderActions";
 import SearchBox from "@/components/SearchBox";
@@ -38,7 +39,7 @@ export default function RootLayout({
               <a href="https://www.jumia.co.ke/" target="_blank" rel="noreferrer">
                 Sell on Jumia
               </a>
-              <a href="/">Jumia Pay</a>
+              <Link href="/" className="jumia-pay-link" title="Jumia Kenya Home">Jumia Pay</Link>
             </div>
             <div>
               <a href="/account">Account</a>
@@ -51,7 +52,7 @@ export default function RootLayout({
         {/* Main orange header */}
         <header className="header">
           <div className="header-inner">
-            <a href="/" className="logo" title="Jumia Kenya">
+            <Link href="/" className="logo" title="Jumia Kenya — Home">
               <img
                 src="https://ke.jumia.is/cms/icons/jumialogo-x-4.png"
                 alt="Jumia"
@@ -64,7 +65,7 @@ export default function RootLayout({
                   borderRadius: 0,
                 }}
               />
-            </a>
+            </Link>
             <SearchBox />
             <HeaderActions />
           </div>
@@ -72,16 +73,17 @@ export default function RootLayout({
 
         <nav className="cat-strip">
           <div className="cat-strip-inner">
-            <a href="/products">All</a>
-            <a href="/products?cat=Electronics">Electronics</a>
-            <a href="/products?cat=Phones">Phones</a>
-            <a href="/products?cat=Headphones">Headphones</a>
-            <a href="/products?cat=Grocery">Grocery</a>
-            <a href="/products?cat=Appliances">Appliances</a>
-            <a href="/products?cat=Cooktops">Cooktops</a>
-            <a href="/products?cat=Shoes">Shoes</a>
-            <a href="/products?cat=Cookware">Cookware</a>
-            <a href="/checkout">Checkout</a>
+            <Link href="/" className="cat-home">Home</Link>
+            <Link href="/products">All</Link>
+            <Link href="/products?cat=Electronics">Electronics</Link>
+            <Link href="/products?cat=Phones">Phones</Link>
+            <Link href="/products?cat=Headphones">Headphones</Link>
+            <Link href="/products?cat=Grocery">Grocery</Link>
+            <Link href="/products?cat=Appliances">Appliances</Link>
+            <Link href="/products?cat=Cooktops">Cooktops</Link>
+            <Link href="/products?cat=Shoes">Shoes</Link>
+            <Link href="/products?cat=Cookware">Cookware</Link>
+            <Link href="/checkout">Checkout</Link>
           </div>
         </nav>
 
@@ -105,8 +107,8 @@ export default function RootLayout({
             </div>
             <div>
               <h4>About</h4>
-              <a href="/products">All Products</a>
-              <a href="/">Home</a>
+              <Link href="/products">All Products</Link>
+              <Link href="/">Home</Link>
             </div>
             <div>
               <h4>Payment methods</h4>
