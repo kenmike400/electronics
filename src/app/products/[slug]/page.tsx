@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProductBySlug } from "@/lib/products";
 import AddToCartButton from "@/components/AddToCartButton";
+import ProductReviews from "@/components/ProductReviews";
+import { getReviewsForProduct, averageRating } from "@/lib/reviews";
 
 export const dynamic = "force-dynamic";
 
@@ -22,8 +24,11 @@ export default async function ProductPage({
     compare && compare > price
       ? Math.round(((compare - price) / compare) * 100)
       : null;
+  const reviews = getReviewsForProduct(product.slug, 10);
+  const avg = averageRating(reviews);
 
   return (
+    <>
     <div className="pdp">
       <div className="pdp-gallery">
         <img src={product.image_url} alt={product.name} />
@@ -33,6 +38,11 @@ export default async function ProductPage({
           {product.brand} · {product.category}
         </p>
         <h1>{product.name}</h1>
+
+        <a href="#reviews" className="pdp-rating-link">
+          <span style={{ color: "#f68b1e" }}>{"★".repeat(Math.round(avg))}{"☆".repeat(5 - Math.round(avg))}</span>
+          <span>{avg} ({reviews.length} verified ratings)</span>
+        </a>
 
         <div className="pdp-price-row">
           <div className="pdp-price">KSh {price.toLocaleString()}</div>
@@ -78,5 +88,8 @@ export default async function ProductPage({
         </div>
       </div>
     </div>
+
+      <ProductReviews slug={product.slug} />
+    </>
   );
 }

@@ -160,42 +160,67 @@ export default function CheckoutPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Order failed");
 
-      // Real M-Pesa STK Push via PalPluss
-      let stkMsg = "";
-      try {
-        const stkRes = await fetch("/api/mpesa/stk", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            amount: total,
-            phone: form.phone,
-            order_number: data.order_number,
-            description: "Order pay",
-          }),
-        });
-        const stk = await stkRes.json();
-        if (!stkRes.ok || !stk.ok) {
-          throw new Error(
-            stk.error ||
-              "Could not send M-Pesa prompt. Check phone number and try again."
-          );
-        }
-        stkMsg = stk.message || "Check your phone and enter M-Pesa PIN";
-        if (typeof window !== "undefined") {
-          sessionStorage.setItem(
-            "last_stk",
-            JSON.stringify({
-              transactionId: stk.transactionId,
-              checkoutRequestId: stk.checkoutRequestId,
-              phone: stk.phone,
-            })
-          );
-        }
-      } catch (stkErr: unknown) {
+      // Real M-Pesa STK Push via PalPluss — wait for success or failure
+      const stkRes = await fetch("/api/mpesa/stk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: total,
+          phone: form.phone,
+          order_number: data.order_number,
+          description: "Order pay",
+        }),
+      });
+      const stk = await stkRes.json();
+      if (!stkRes.ok || !stk.ok) {
         throw new Error(
-          stkErr instanceof Error
-            ? stkErr.message
-            : "M-Pesa push failed"
+          stk.error ||
+            "Could not send M-Pesa prompt. Check phone number and try again."
+        );
+      }
+      setError("");
+      // Poll until SUCCESS / FAILED (max ~90s)
+      const txId = stk.transactionId as string;
+      let finalStatus = "PENDING";
+      let paid = false;
+      for (let i = 0; i < 30; i++) {
+        await new Promise((r) => setTimeout(r, 3000));
+        try {
+          const st = await fetch(`/api/mpesa/status?id=${encodeURIComponent(txId)}`);
+          const sj = await st.json();
+          if (sj.success) {
+            paid = true;
+            finalStatus = "SUCCESS";
+            break;
+          }
+          if (sj.failed) {
+            finalStatus = "FAILED";
+            throw new Error(
+              sj.result_desc ||
+                "M-Pesa payment failed or was cancelled. Try again."
+            );
+          }
+        } catch (pollErr) {
+          if (pollErr instanceof Error && pollErr.message.includes("M-Pesa")) {
+            throw pollErr;
+          }
+        }
+      }
+      if (!paid && finalStatus === "PENDING") {
+        throw new Error(
+          "Still waiting for M-Pesa PIN. Open the prompt on your phone and try again if it expired."
+        );
+      }
+
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem(
+          "last_stk",
+          JSON.stringify({
+            transactionId: txId,
+            checkoutRequestId: stk.checkoutRequestId,
+            phone: stk.phone,
+            status: finalStatus,
+          })
         );
       }
 
@@ -204,7 +229,7 @@ export default function CheckoutPage() {
         sessionStorage.setItem("last_receipt_html", data.receipt_html);
       }
       router.push(
-        `/order/${data.order_number}?success=1&stk=1&redirect=${encodeURIComponent(
+        `/order/${data.order_number}?success=1&paid=1&redirect=${encodeURIComponent(
           data.redirect_url || "https://www.jumia.co.ke/"
         )}`
       );
