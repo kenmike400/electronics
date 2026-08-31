@@ -2,11 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { orderReceiptHtml } from "@/lib/email";
 
 function orderNumber() {
-  return (
-    "JK" +
-    Date.now().toString(36).toUpperCase() +
-    Math.random().toString(36).slice(2, 6).toUpperCase()
-  );
+  const d = new Date();
+  const y = d.getFullYear().toString().slice(2);
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  const seq = Math.floor(Math.random() * 90000 + 10000).toString();
+  const tail = Date.now().toString(36).slice(-3).toUpperCase();
+  // e.g. JK-260831-48291-A3F
+  return `JK-${y}${m}${day}-${seq}-${tail}`;
 }
 
 export async function POST(req: NextRequest) {
@@ -87,9 +90,15 @@ export async function POST(req: NextRequest) {
             customer_phone: phone,
             shipping_address: shippingLine,
             total: Number(total),
-            status: "paid",
+            subtotal: subtotal != null ? Number(subtotal) : Number(total),
+            discount: discount != null ? Number(discount) : 0,
+            promo_code: promo_code || null,
+            county: county || null,
+            sublocation: sublocation || null,
+            status: "pending_payment",
+            payment_status: "pending",
             payment_method: "mpesa",
-            payment_ref: `MPESA-${onum}`,
+            payment_ref: null,
             items,
             profile_id: profileId,
           })

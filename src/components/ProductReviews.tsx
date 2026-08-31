@@ -14,73 +14,113 @@ function Stars({ n }: { n: number }) {
 
 export default function ProductReviews({ slug }: { slug: string }) {
   const seeded = useMemo(() => getReviewsForProduct(slug, 10), [slug]);
-  const [extra, setExtra] = useState<Review[]>([]);
-  const [form, setForm] = useState({ author: "", title: "", body: "", rating: 5 });
+  const [reviews, setReviews] = useState<Review[]>(seeded);
+  const [loading, setLoading] = useState(true);
+  const [form, setForm] = useState({
+    author: "",
+    title: "",
+    body: "",
+    rating: 5,
+    order_number: "",
+  });
   const [msg, setMsg] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  const reviews = [...extra, ...seeded];
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/api/reviews?slug=${encodeURIComponent(slug)}`);
+        const data = await res.json();
+        if (!cancelled && Array.isArray(data.reviews) && data.reviews.length > 0) {
+          setReviews(data.reviews);
+        }
+      } catch {
+        /* keep seeded */
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [slug]);
+
   const avg = averageRating(reviews);
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!form.author.trim() || !form.body.trim()) {
       setMsg("Name and review text required");
       return;
     }
-    const r: Review = {
-      id: `local-${Date.now()}`,
-      author: form.author.trim().slice(0, 40),
-      rating: form.rating,
-      title: form.title.trim() || "Customer review",
-      body: form.body.trim().slice(0, 500),
-      date: new Date().toISOString().slice(0, 10),
-      verified: false,
-      helpful: 0,
-    };
-    setExtra((x) => [r, ...x]);
+    setBusy(true);
+    setMsg("");
     try {
-      const key = `reviews:${slug}`;
-      const prev = JSON.parse(localStorage.getItem(key) || "[]");
-      localStorage.setItem(key, JSON.stringify([r, ...prev].slice(0, 20)));
-    } catch {}
-    setForm({ author: "", title: "", body: "", rating: 5 });
-    setMsg("Thanks! Your review was added.");
+      const res = await fetch("/api/reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          slug,
+          author: form.author,
+          title: form.title,
+          body: form.body,
+          rating: form.rating,
+          order_number: form.order_number || undefined,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed");
+      if (data.review) {
+        setReviews((r) => [data.review, ...r]);
+      }
+      setForm({ author: "", title: "", body: "", rating: 5, order_number: "" });
+      setMsg(
+        data.review?.verified
+          ? "Thanks! Verified purchase review published."
+          : "Thanks! Your review was saved."
+      );
+    } catch (err) {
+      setMsg(err instanceof Error ? err.message : "Could not save review");
+    } finally {
+      setBusy(false);
+    }
   }
-
-  useEffect(() => {
-    try {
-      const prev = JSON.parse(localStorage.getItem(`reviews:${slug}`) || "[]");
-      if (Array.isArray(prev) && prev.length) setExtra(prev);
-    } catch {}
-  }, [slug]);
 
   return (
     <section className="reviews-section" id="reviews">
       <div className="reviews-head">
         <h2>Customer Reviews</h2>
         <div className="reviews-summary">
-          <Stars n={Math.round(avg)} />
-          <strong>{avg}</strong>
-          <span>({reviews.length} verified ratings)</span>
+          <Stars n={Math.round(avg) || 5} />
+          <strong>{avg || "—"}</strong>
+          <span>
+            ({reviews.length} rating{reviews.length === 1 ? "" : "s"}
+            {loading ? " · loading…" : ""})
+          </span>
         </div>
       </div>
 
       <div className="reviews-list">
         {reviews.map((r) => (
-          <article key={r.id} className="review-card">
+          <article key={String(r.id)} className="review-card">
             <div className="review-top">
               <Stars n={r.rating} />
               <span className="review-author">{r.author}</span>
               {r.verified ? (
                 <span className="review-verified">✓ Verified Purchase</span>
               ) : (
-                <span className="review-new">New</span>
+                <span className="review-new">Customer</span>
               )}
               <span className="review-date">{r.date}</span>
             </div>
             <h3 className="review-title">{r.title}</h3>
             <p className="review-body">{r.body}</p>
-            <div className="review-helpful">{r.helpful} people found this helpful</div>
+            {r.helpful ? (
+              <div className="review-helpful">
+                {r.helpful} people found this helpful
+              </div>
+            ) : null}
           </article>
         ))}
       </div>
@@ -88,7 +128,9 @@ export default function ProductReviews({ slug }: { slug: string }) {
       <form className="review-form" onSubmit={submit}>
         <h3>Write a review</h3>
         <p className="review-form-hint">
-          Share your experience. Verified purchases show a badge after order completion.
+          Add your order number (e.g. JK-260831-48291-A3F) after a paid order to
+          get a <strong>Verified Purchase</strong> badge. Reviews are stored in
+          Supabase.
         </p>
         <label>
           Your name
@@ -96,6 +138,14 @@ export default function ProductReviews({ slug }: { slug: string }) {
             value={form.author}
             onChange={(e) => setForm({ ...form, author: e.target.value })}
             required
+          />
+        </label>
+        <label>
+          Order number (optional — for verified badge)
+          <input
+            value={form.order_number}
+            onChange={(e) => setForm({ ...form, order_number: e.target.value })}
+            placeholder="JK-260831-48291-A3F"
           />
         </label>
         <label>
@@ -130,8 +180,8 @@ export default function ProductReviews({ slug }: { slug: string }) {
           />
         </label>
         {msg ? <p className="review-msg">{msg}</p> : null}
-        <button type="submit" className="btn">
-          Submit review
+        <button type="submit" className="btn" disabled={busy}>
+          {busy ? "Saving…" : "Submit review"}
         </button>
       </form>
     </section>

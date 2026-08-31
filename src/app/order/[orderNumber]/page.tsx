@@ -47,7 +47,8 @@ export default function OrderPage() {
         height={64}
         style={{ borderRadius: 8, marginBottom: 12 }}
       />
-      <h1>Order {orderNumber}</h1>
+      <p className="order-number-display" style={{fontSize:13,color:"#75757a",marginBottom:8}}>Order number</p>
+      <h1 style={{letterSpacing:"0.02em"}}>Order {orderNumber}</h1>
       <p className="subtitle">
         Receipt below. Enter your M-Pesa PIN when prompted. After payment you are sent to{" "}
         <a href={redirect}>jumia.co.ke</a>.

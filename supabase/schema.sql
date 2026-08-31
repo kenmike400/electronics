@@ -100,3 +100,30 @@ insert into products (name, slug, description, price, compare_at_price, image_ur
 ('XY XY Brand 200W GaN Charger 3USB-A 2USB-C 5-Port Super Fast Charging Adapter Compatible with iPhone, Huawei, Xiaomi, Redmi, Tecno, Infinix, itel & more brands(black).', 'xy-xy-brand-200w-gan-charger-3usb-a-2usb-c-5-port-super-fast-charging-adapter-co', 'XY XY Brand 200W GaN Charger 3USB-A 2USB-C 5-Port Super Fast Charging Adapter Compatible with iPhone, Huawei, Xiaomi, Redmi, Tecno, Infinix, itel & more brands(black).', 699.48, NULL, 'https://ke.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/89/5555523/1.jpg?9802', 'Generic', 'Electronics', 30),
 ('Pot and Pan Protectors, Set of 12 and 3 Different Size, Cookware Protector Set/Pots and Pans Dividers/Pans Separator Anti-Slip to Avoid Scratching or Marring When Stacking', 'pot-and-pan-protectors-set-of-12-and-3-different-size-cookware-protector-set-pot', 'Pot and Pan Protectors, Set of 12 and 3 Different Size, Cookware Protector Set/Pots and Pans Dividers/Pans Separator Anti-Slip to Avoid Scratching or Marring When Stacking', 754.0, 2143.0, 'https://ke.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/89/5555523/1.jpg?9802', 'Generic', 'Electronics', 30)
 on conflict (slug) do nothing;
+
+-- Reviews (run if not already applied)
+create table if not exists reviews (
+  id uuid primary key default gen_random_uuid(),
+  product_slug text not null,
+  author text not null,
+  rating integer not null check (rating >= 1 and rating <= 5),
+  title text,
+  body text not null,
+  verified boolean default false,
+  helpful integer default 0,
+  order_number text,
+  created_at timestamptz default now()
+);
+create index if not exists reviews_slug_idx on reviews(product_slug);
+alter table reviews enable row level security;
+drop policy if exists "Public read reviews" on reviews;
+create policy "Public read reviews" on reviews for select using (true);
+drop policy if exists "Public insert reviews" on reviews;
+create policy "Public insert reviews" on reviews for insert with check (true);
+
+alter table orders add column if not exists payment_status text default 'pending';
+alter table orders add column if not exists discount numeric(12,2) default 0;
+alter table orders add column if not exists promo_code text;
+alter table orders add column if not exists subtotal numeric(12,2);
+alter table orders add column if not exists county text;
+alter table orders add column if not exists sublocation text;

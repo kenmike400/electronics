@@ -32,17 +32,21 @@ export async function POST(req: NextRequest) {
           body?.accountReference ||
           body?.data?.transactionId;
         if (ref) {
+          const refStr = String(ref);
           await supabase
             .from("orders")
             .update({
+              status: "paid",
               payment_status: "paid",
               payment_ref: String(
-                body?.data?.providerCheckoutId ||
+                body?.data?.provider_checkout_id ||
+                  body?.data?.providerCheckoutId ||
+                  body?.data?.transaction_id ||
                   body?.data?.transactionId ||
-                  ref
+                  refStr
               ),
             })
-            .eq("order_number", String(ref));
+            .or(`order_number.eq.${refStr},payment_ref.eq.${refStr}`);
         }
       } catch (e) {
         console.error("callback db update", e);

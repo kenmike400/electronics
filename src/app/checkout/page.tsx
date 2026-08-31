@@ -224,6 +224,18 @@ export default function CheckoutPage() {
         );
       }
 
+      // Mark order paid in Supabase
+      try {
+        await fetch("/api/orders/mark-paid", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            order_number: data.order_number,
+            payment_ref: txId || stk.checkoutRequestId,
+          }),
+        });
+      } catch {}
+
       localStorage.removeItem("cart");
       if (data.receipt_html) {
         sessionStorage.setItem("last_receipt_html", data.receipt_html);
