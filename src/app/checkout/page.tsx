@@ -160,12 +160,51 @@ export default function CheckoutPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Order failed");
 
+      // Real M-Pesa STK Push via PalPluss
+      let stkMsg = "";
+      try {
+        const stkRes = await fetch("/api/mpesa/stk", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: total,
+            phone: form.phone,
+            order_number: data.order_number,
+            description: "Order pay",
+          }),
+        });
+        const stk = await stkRes.json();
+        if (!stkRes.ok || !stk.ok) {
+          throw new Error(
+            stk.error ||
+              "Could not send M-Pesa prompt. Check phone number and try again."
+          );
+        }
+        stkMsg = stk.message || "Check your phone and enter M-Pesa PIN";
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem(
+            "last_stk",
+            JSON.stringify({
+              transactionId: stk.transactionId,
+              checkoutRequestId: stk.checkoutRequestId,
+              phone: stk.phone,
+            })
+          );
+        }
+      } catch (stkErr: unknown) {
+        throw new Error(
+          stkErr instanceof Error
+            ? stkErr.message
+            : "M-Pesa push failed"
+        );
+      }
+
       localStorage.removeItem("cart");
       if (data.receipt_html) {
         sessionStorage.setItem("last_receipt_html", data.receipt_html);
       }
       router.push(
-        `/order/${data.order_number}?success=1&redirect=${encodeURIComponent(
+        `/order/${data.order_number}?success=1&stk=1&redirect=${encodeURIComponent(
           data.redirect_url || "https://www.jumia.co.ke/"
         )}`
       );

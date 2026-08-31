@@ -36,7 +36,7 @@ export default function OrderPage() {
     <div className="hero" style={{ textAlign: "center" }}>
       {success && (
         <div className="alert alert-success" style={{ marginBottom: 20 }}>
-          Payment recorded (M-Pesa). Order saved in Supabase. Redirecting to
+          M-Pesa PIN prompt sent to your phone. Complete payment on your handset. Order saved. Redirecting to
           Jumia in {countdown}s…
         </div>
       )}
@@ -49,7 +49,7 @@ export default function OrderPage() {
       />
       <h1>Order {orderNumber}</h1>
       <p className="subtitle">
-        Receipt below. After successful M-Pesa payment you are sent to{" "}
+        Receipt below. Enter your M-Pesa PIN when prompted. After payment you are sent to{" "}
         <a href={redirect}>jumia.co.ke</a>.
       </p>
       {receipt && (
