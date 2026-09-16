@@ -7,7 +7,7 @@ import SearchBox from "@/components/SearchBox";
 import PromoCountdown from "@/components/PromoCountdown";
 import PromoOverlay from "@/components/PromoOverlay";
 import PostHogProvider from "@/components/PostHogProvider";
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Suspense } from "react";
 
@@ -147,6 +147,7 @@ export default function RootLayout({
 
             <PromoOverlay />
 
+            {/* Vercel Analytics - correct Next.js import */}
             <Analytics />
             <SpeedInsights />
           </PostHogProvider>
