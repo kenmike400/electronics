@@ -4,6 +4,7 @@ import "./globals.css";
 import HeaderActions from "@/components/HeaderActions";
 import SearchBox from "@/components/SearchBox";
 import PromoCountdown from "@/components/PromoCountdown";
+import PromoOverlay from "@/components/PromoOverlay";
 
 export const metadata: Metadata = {
   title: "Jumia Kenya | Online Shopping for Electronics, Phones, Grocery & More",
@@ -124,6 +125,9 @@ export default function RootLayout({
             © {new Date().getFullYear()} Jumia Kenya Electronics · Pay with M-Pesa
           </div>
         </footer>
+
+        {/* Timed promo overlay - shows at 6s and 27s */}
+        <PromoOverlay />
       </body>
     </html>
   );
