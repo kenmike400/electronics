@@ -1,0 +1,68 @@
+[
+  {
+    "name": "NIVEA UV Sunscreen Face Shine Control Cream SPF 50 - 40ml",
+    "slug": "nivea-uv-sunscreen-face-shine-control-cream-spf-50-40ml-798607623",
+    "price": 799.0,
+    "compare_at_price": 1200.0,
+    "brand": "NIVEA",
+    "category": "Health & Beauty",
+    "description": "NIVEA UV Sunscreen Face Shine Control Cream SPF 50 - 40ml. Protects skin from UV rays while controlling shine.",
+    "image_url": "https://ke.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/79/8607623/1.jpg?9271",
+    "stock": 50
+  },
+  {
+    "name": "Garnier Even & Bright Vitamin C+ Booster Serum 30ml",
+    "slug": "garnier-even-bright-vitamin-c-booster-serum-329513623",
+    "price": 746.0,
+    "compare_at_price": 995.0,
+    "brand": "Garnier",
+    "category": "Health & Beauty",
+    "description": "Even & Bright Vitamin C+ Booster Serum. Fades dark marks and brightens skin.",
+    "image_url": "https://ke.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/32/9513623/1.jpg?5634",
+    "stock": 40
+  },
+  {
+    "name": "Garnier Super UV Cooling Watergel Sunscreen SPF 50",
+    "slug": "garnier-super-uv-cooling-watergel-sunscreen-spf-50-590048523",
+    "price": 350.0,
+    "compare_at_price": 415.0,
+    "brand": "Garnier",
+    "category": "Health & Beauty",
+    "description": "Super UV Cooling Watergel Sunscreen with Vitamin C & SPF 50. Lightweight cooling formula.",
+    "image_url": "https://ke.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/59/0048523/1.jpg?4181",
+    "stock": 60
+  },
+  {
+    "name": "NIVEA Soft Moisturizing Cream 75ml (Pack of 2)",
+    "slug": "nivea-soft-moisturizing-cream-75ml-pack-of-2-242344723",
+    "price": 799.0,
+    "compare_at_price": 1999.0,
+    "brand": "NIVEA",
+    "category": "Health & Beauty",
+    "description": "Soft Moisturizing Cream 75ml Pack of 2. Deep hydration for soft, smooth skin.",
+    "image_url": "https://ke.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/24/2344723/1.jpg?1627",
+    "stock": 45
+  },
+  {
+    "name": "Handheld Massager Portable Fascia Massage Gun",
+    "slug": "handheld-massager-portable-fascia-massage-gun-309487709",
+    "price": 899.0,
+    "compare_at_price": 2010.0,
+    "brand": "Generic",
+    "category": "Health & Beauty",
+    "description": "Handheld Massager, Portable Fascia Massage Gun For Muscle Relaxation. Great for recovery.",
+    "image_url": "https://ke.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/90/7784903/1.jpg?6785",
+    "stock": 30
+  },
+  {
+    "name": "MATIHO Pure Active 3-in-1 Anti Blackhead Wash Scrub Mask 50ml",
+    "slug": "matiho-pure-active-3-in-1-anti-blackhead-wash-scrub-mask-368498352",
+    "price": 335.0,
+    "compare_at_price": 457.0,
+    "brand": "MATIHO",
+    "category": "Health & Beauty",
+    "description": "Pure Active 3-in-1 Anti Blackhead Wash Scrub Mask - 50ml. Cleanses, scrubs and masks.",
+    "image_url": "https://ke.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/36/8498352/1.jpg?6751",
+    "stock": 55
+  }
+]
