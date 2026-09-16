@@ -5,6 +5,7 @@ import HeaderActions from "@/components/HeaderActions";
 import SearchBox from "@/components/SearchBox";
 import PromoCountdown from "@/components/PromoCountdown";
 import PromoOverlay from "@/components/PromoOverlay";
+import PostHogProvider from "@/components/PostHogProvider";
 
 export const metadata: Metadata = {
   title: "Jumia Kenya | Online Shopping for Electronics, Phones, Grocery & More",
@@ -33,103 +34,105 @@ export default function RootLayout({
         />
       </head>
       <body>
-        {/* Top bar — matches Jumia utility row */}
-        <div className="topbar">
-          <div className="topbar-inner">
-            <div>
-              <a href="https://www.jumia.co.ke/" target="_blank" rel="noreferrer">
-                Sell on Jumia
-              </a>
-              <Link href="/" className="jumia-pay-link" title="Jumia Kenya Home">Jumia Pay</Link>
-            </div>
-            <div>
-              <a href="/account">Account</a>
-              <a href="/checkout">Help</a>
-              <a href="/cart">Cart</a>
-            </div>
-          </div>
-        </div>
-
-        {/* Main orange header */}
-        <header className="header">
-          <div className="header-inner">
-            <Link href="/" className="logo" title="Jumia Kenya — Home">
-              <img
-                src="https://ke.jumia.is/cms/icons/jumialogo-x-4.png"
-                alt="Jumia"
-                width={100}
-                height={32}
-                style={{
-                  height: 32,
-                  width: "auto",
-                  background: "transparent",
-                  borderRadius: 0,
-                }}
-              />
-            </Link>
-            <SearchBox />
-            <HeaderActions />
-          </div>
-        </header>
-
-        <nav className="cat-strip">
-          <div className="cat-strip-inner">
-            <Link href="/" className="cat-home">Home</Link>
-            <Link href="/products">All</Link>
-            <Link href="/products?cat=Electronics">Electronics</Link>
-            <Link href="/products?cat=Phones">Phones</Link>
-            <Link href="/products?cat=Headphones">Headphones</Link>
-            <Link href="/products?cat=Health+%26+Beauty">Health & Beauty</Link>
-            <Link href="/products?cat=Grocery">Grocery</Link>
-            <Link href="/products?cat=Appliances">Appliances</Link>
-            <Link href="/products?cat=Cooktops">Cooktops</Link>
-            <Link href="/products?cat=Shoes">Shoes</Link>
-            <Link href="/products?cat=Cookware">Cookware</Link>
-            <Link href="/checkout">Checkout</Link>
-          </div>
-        </nav>
-
-        <div className="promo-banner" aria-label="Promotion September80">
-          <div className="promo-track">
-            <span>🔥 EVERYTHING UP TO 80% OFF — CODE <strong>September80</strong> · Items KSh 2,000+ → 80% OFF · under KSh 2,000 → 50% OFF <PromoCountdown /> Site-wide at checkout · </span>
-            <span>🔥 EVERYTHING UP TO 80% OFF — CODE <strong>September80</strong> · Items KSh 2,000+ → 80% OFF · under KSh 2,000 → 50% OFF <PromoCountdown /> Site-wide at checkout · </span>
-            <span>🔥 EVERYTHING UP TO 80% OFF — CODE <strong>September80</strong> · Items KSh 2,000+ → 80% OFF · under KSh 2,000 → 50% OFF <PromoCountdown /> Site-wide at checkout · </span>
-          </div>
-        </div>
-
-        <main className="container">{children}</main>
-
-        <footer className="footer">
-          <div className="footer-inner">
-            <div>
-              <h4>Need Help?</h4>
-              <a href="/account">Your Account</a>
-              <a href="/cart">Cart</a>
-              <a href="/checkout">Checkout</a>
-            </div>
-            <div>
-              <h4>About</h4>
-              <Link href="/products">All Products</Link>
-              <Link href="/">Home</Link>
-            </div>
-            <div>
-              <h4>Payment methods</h4>
-              <span className="mpesa-badge">M-Pesa only</span>
-            </div>
-            <div>
-              <h4>Shop</h4>
-              <a href="/products?cat=Electronics">Electronics</a>
-              <a href="/products?cat=Health+%26+Beauty">Health & Beauty</a>
-              <a href="/products?cat=Grocery">Grocery</a>
+        <PostHogProvider>
+          {/* Top bar — matches Jumia utility row */}
+          <div className="topbar">
+            <div className="topbar-inner">
+              <div>
+                <a href="https://www.jumia.co.ke/" target="_blank" rel="noreferrer">
+                  Sell on Jumia
+                </a>
+                <Link href="/" className="jumia-pay-link" title="Jumia Kenya Home">Jumia Pay</Link>
+              </div>
+              <div>
+                <a href="/account">Account</a>
+                <a href="/checkout">Help</a>
+                <a href="/cart">Cart</a>
+              </div>
             </div>
           </div>
-          <div className="footer-bottom">
-            © {new Date().getFullYear()} Jumia Kenya Electronics · Pay with M-Pesa
-          </div>
-        </footer>
 
-        {/* Timed promo overlay - shows at 6s and 27s */}
-        <PromoOverlay />
+          {/* Main orange header */}
+          <header className="header">
+            <div className="header-inner">
+              <Link href="/" className="logo" title="Jumia Kenya — Home">
+                <img
+                  src="https://ke.jumia.is/cms/icons/jumialogo-x-4.png"
+                  alt="Jumia"
+                  width={100}
+                  height={32}
+                  style={{
+                    height: 32,
+                    width: "auto",
+                    background: "transparent",
+                    borderRadius: 0,
+                  }}
+                />
+              </Link>
+              <SearchBox />
+              <HeaderActions />
+            </div>
+          </header>
+
+          <nav className="cat-strip">
+            <div className="cat-strip-inner">
+              <Link href="/" className="cat-home">Home</Link>
+              <Link href="/products">All</Link>
+              <Link href="/products?cat=Electronics">Electronics</Link>
+              <Link href="/products?cat=Phones">Phones</Link>
+              <Link href="/products?cat=Headphones">Headphones</Link>
+              <Link href="/products?cat=Health+%26+Beauty">Health & Beauty</Link>
+              <Link href="/products?cat=Grocery">Grocery</Link>
+              <Link href="/products?cat=Appliances">Appliances</Link>
+              <Link href="/products?cat=Cooktops">Cooktops</Link>
+              <Link href="/products?cat=Shoes">Shoes</Link>
+              <Link href="/products?cat=Cookware">Cookware</Link>
+              <Link href="/checkout">Checkout</Link>
+            </div>
+          </nav>
+
+          <div className="promo-banner" aria-label="Promotion September80">
+            <div className="promo-track">
+              <span>🔥 EVERYTHING UP TO 80% OFF — CODE <strong>September80</strong> · Items KSh 2,000+ → 80% OFF · under KSh 2,000 → 50% OFF <PromoCountdown /> Site-wide at checkout · </span>
+              <span>🔥 EVERYTHING UP TO 80% OFF — CODE <strong>September80</strong> · Items KSh 2,000+ → 80% OFF · under KSh 2,000 → 50% OFF <PromoCountdown /> Site-wide at checkout · </span>
+              <span>🔥 EVERYTHING UP TO 80% OFF — CODE <strong>September80</strong> · Items KSh 2,000+ → 80% OFF · under KSh 2,000 → 50% OFF <PromoCountdown /> Site-wide at checkout · </span>
+            </div>
+          </div>
+
+          <main className="container">{children}</main>
+
+          <footer className="footer">
+            <div className="footer-inner">
+              <div>
+                <h4>Need Help?</h4>
+                <a href="/account">Your Account</a>
+                <a href="/cart">Cart</a>
+                <a href="/checkout">Checkout</a>
+              </div>
+              <div>
+                <h4>About</h4>
+                <Link href="/products">All Products</Link>
+                <Link href="/">Home</Link>
+              </div>
+              <div>
+                <h4>Payment methods</h4>
+                <span className="mpesa-badge">M-Pesa only</span>
+              </div>
+              <div>
+                <h4>Shop</h4>
+                <a href="/products?cat=Electronics">Electronics</a>
+                <a href="/products?cat=Health+%26+Beauty">Health & Beauty</a>
+                <a href="/products?cat=Grocery">Grocery</a>
+              </div>
+            </div>
+            <div className="footer-bottom">
+              © {new Date().getFullYear()} Jumia Kenya Electronics · Pay with M-Pesa
+            </div>
+          </footer>
+
+          {/* Timed promo overlay - shows at 6s and 27s */}
+          <PromoOverlay />
+        </PostHogProvider>
       </body>
     </html>
   );
