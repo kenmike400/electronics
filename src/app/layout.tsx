@@ -9,7 +9,7 @@ import PromoOverlay from "@/components/PromoOverlay";
 export const metadata: Metadata = {
   title: "Jumia Kenya | Online Shopping for Electronics, Phones, Grocery & More",
   description:
-    "Buy phones, TVs, groceries, appliances & more. Best prices in Kenya. Pay with M-Pesa.",
+    "Buy phones, TVs, groceries, appliances, health & beauty & more. Best prices in Kenya. Pay with M-Pesa.",
   icons: {
     icon: "https://www.jumia.co.ke/assets_he/favicon.87f00114.ico",
   },
@@ -79,6 +79,7 @@ export default function RootLayout({
             <Link href="/products?cat=Electronics">Electronics</Link>
             <Link href="/products?cat=Phones">Phones</Link>
             <Link href="/products?cat=Headphones">Headphones</Link>
+            <Link href="/products?cat=Health+%26+Beauty">Health & Beauty</Link>
             <Link href="/products?cat=Grocery">Grocery</Link>
             <Link href="/products?cat=Appliances">Appliances</Link>
             <Link href="/products?cat=Cooktops">Cooktops</Link>
@@ -118,6 +119,7 @@ export default function RootLayout({
             <div>
               <h4>Shop</h4>
               <a href="/products?cat=Electronics">Electronics</a>
+              <a href="/products?cat=Health+%26+Beauty">Health & Beauty</a>
               <a href="/products?cat=Grocery">Grocery</a>
             </div>
           </div>
